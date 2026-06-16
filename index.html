@@ -3,25 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ทดสอบ OneSignal Root</title>
+    <title>ระบบคลังพัสดุ - Test OneSignal</title>
     
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "c67167f2-e224-4efc-a843-aa94816e5220",
-      serviceWorkerPath: "testonesignal/OneSignalSDKWorker.js",
-      serviceWorkerParam: { scope: "/testonesignal/" },
-      notifyButton: {
-        enable: true,
-      }
-    });
-  });
-</script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "c67167f2-e224-4efc-a843-aa94816e5220",
+          // ตั้งค่าสำหรับ GitHub Pages ในโฟลเดอร์ย่อย (testonesignal)
+          serviceWorkerPath: "testonesignal/OneSignalSDKWorker.js",
+          serviceWorkerParam: { scope: "/testonesignal/" },
+          notifyButton: {
+            enable: true, // เปิดปุ่มกระดิ่งรับแจ้งเตือนมุมขวาล่าง
+          }
+        });
+      });
+    </script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button.submit-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button.submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h2>ระบบทดสอบแจ้งเตือน (Root Repository)</h2>
-    <p>กรุณากดเปิดรับสิทธิ์การแจ้งเตือนที่ปุ่มกระดิ่งมุมขวาล่างครับ</p>
+
+<div class="container">
+    <h2>รับพัสดุเข้าคลัง</h2>
+    
+    <form id="inventoryForm">
+        <div class="form-group">
+            <label for="itemName">ชื่อพัสดุ/อุปกรณ์</label>
+            <input type="text" id="itemName" placeholder="เช่น Sound usb, กระดาษ A4" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="amount">จำนวนที่รับเข้า</label>
+            <input type="number" id="amount" placeholder="เช่น 1, 5" min="1" required>
+        </div>
+        
+        <button type="submit" class="submit-btn">บันทึกและส่งแจ้งเตือน</button>
+    </form>
+
+    <p class="note">อย่าลืมกดปุ่มกระดิ่งสีฟ้ามุมขวาล่างเพื่อเปิดรับการแจ้งเตือนก่อนทดสอบนะครับ</p>
+</div>
+
+<script>
+    // ดักจับเหตุการณ์ตอนกด Submit ฟอร์ม
+    document.getElementById('inventoryForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // ป้องกันหน้าเว็บรีเฟรช
+        
+        // ดึงค่าจากอินพุตมาเก็บในตัวแปร
+        const itemName = document.getElementById('itemName').value;
+        const amount = document.getElementById('amount').value;
+        
+        // ข้อมูลที่จะส่งไปหลังบ้าน (GAS)
+        const formData = {
+            itemName: itemName,
+            amount: amount
+        };
+
+        // ⚠️ นำลิงก์ Web App URL ที่ได้จากการ Deploy Google Apps Script มาใส่ตรงนี้แทน XXXXXX
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz59w2eAtUNo23lhO5Il02kR0CzhTJMZi7EMcgJIvn9k885riaKE11TA9GZuA56hOBc/exec";
+
+        // ส่งข้อมูลไปที่หลังบ้าน Google Apps Script
+        fetch(GAS_WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors", // ใช้ no-cors เพื่อไม่ให้ติดบล็อก CORS นโยบายของ Google
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(() => {
+            alert(`บันทึกข้อมูลเรียบร้อย! ระบบหลังบ้านกำลังส่งแจ้งเตือน: รับเข้า ${itemName} จำนวน +${amount} อัน`);
+            // ล้างข้อมูลในฟอร์มหลังจากส่งสำเร็จ
+            document.getElementById('inventoryForm').reset();
+        })
+        .catch(err => {
+            console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", err);
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อระบบหลังบ้าน");
+        });
+    });
+</script>
+
 </body>
 </html>
