@@ -11,6 +11,8 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "c67167f2-e224-4efc-a843-aa94816e5220",
+            serviceWorkerPath: "testonesignal/OneSignalSDKWorker.js", // ไม่มี / นำหน้าคำว่า testonesignal
+    serviceWorkerParam: { scope: "/testonesignal/" },
           notifyButton: {
             enable: true, // เปิดปุ่มกระดิ่งมุมขวาล่าง
           },
