@@ -6,20 +6,19 @@
     <title>ทดสอบ OneSignal Root</title>
     
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "c67167f2-e224-4efc-a843-aa94816e5220",
-            serviceWorkerPath: "testonesignal/OneSignalSDKWorker.js", // ไม่มี / นำหน้าคำว่า testonesignal
-    serviceWorkerParam: { scope: "/testonesignal/" },
-          notifyButton: {
-            enable: true, // เปิดปุ่มกระดิ่งมุมขวาล่าง
-          },
-          allowLocalhostAsSecureOrigin: true
-        });
-      });
-    </script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "c67167f2-e224-4efc-a843-aa94816e5220",
+      serviceWorkerPath: "testonesignal/OneSignalSDKWorker.js",
+      serviceWorkerParam: { scope: "/testonesignal/" },
+      notifyButton: {
+        enable: true,
+      }
+    });
+  });
+</script>
 </head>
 <body>
     <h2>ระบบทดสอบแจ้งเตือน (Root Repository)</h2>
